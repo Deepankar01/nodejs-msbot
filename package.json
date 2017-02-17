@@ -1,0 +1,30 @@
+{
+  "name": "nodejs-msbot",
+  "version": "1.0.0",
+  "description": "microsoft bot framework",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deepankar01/nodejs-msbot.git"
+  },
+  "keywords": [
+    "nodejs",
+    "bot-framework"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Deepankar01/nodejs-msbot/issues"
+  },
+  "homepage": "https://github.com/Deepankar01/nodejs-msbot#readme",
+  "dependencies": {
+    "botbuilder": "^3.6.0",
+    "moment": "^2.17.1",
+    "restify": "^4.3.0",
+    "unirest": "^0.5.1"
+  }
+}
