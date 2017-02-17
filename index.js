@@ -1,9 +1,8 @@
-const config = require("./config/config.json");
+const applicationConfig = require("./config/config.json");
 var restify = require('restify');
 var builder = require('botbuilder');
 var moment = require("moment");
 var unirest = require('unirest');
-
 //load string utils
 require('./utils/strings');
 
@@ -20,14 +19,14 @@ console.log("{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET"));
 
 // Setup Restify Server
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || config.port, function () {
+server.listen(process.env.port || process.env.PORT || applicationConfig.port, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: config.appId,
-    appPassword: config.appPassword
+    appId: applicationConfig.appId,
+    appPassword: applicationConfig.appPassword
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
