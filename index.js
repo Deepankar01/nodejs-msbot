@@ -1,12 +1,18 @@
+const config = require("./config/config.json");
 var restify = require('restify');
 var builder = require('botbuilder');
 var moment = require("moment");
 var unirest = require('unirest');
 
+//load string utils
+require('./utils/strings');
+
 var menuChoices = [
     "Search Movie", "Movies List"
 ];
 
+
+console.log("{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET"));
 
 //=========================================================
 // Bot Setup
@@ -14,14 +20,14 @@ var menuChoices = [
 
 // Setup Restify Server
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function () {
+server.listen(process.env.port || process.env.PORT || config.port, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: "YOUR APP ID",
-    appPassword: "YOUR APP PASSWORD"
+    appId: config.appId,
+    appPassword: config.appPassword
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
