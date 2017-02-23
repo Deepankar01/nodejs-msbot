@@ -33,3 +33,7 @@ It queries from [omdbAPI](http://www.omdbapi.com/) a free movie API to work with
 > #### Quick Note
 >
 > It uses `/api/messages` URL to send and receive the messages
+
+```
+![alt tag](https://github.com/Deepankar01/nodejs-msbot/BotFramework.gif)
+```
