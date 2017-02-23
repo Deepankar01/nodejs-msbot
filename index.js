@@ -4,10 +4,12 @@ const url = require('url');
 const cardsUtility = require('./utils/cards');
 const _ = require('lodash');
 
+//3rd party libraries
 let restify = require('restify');
 let builder = require('botbuilder');
 let moment = require("moment");
-let unirest = require('unirest');
+
+//self made libraries
 let omdbNetworkUtils = require('./utils/omdb');
 let movieUtils = require('./utils/movies');
 let seriesUtils = require('./utils/tvSeries');
@@ -84,7 +86,7 @@ bot.dialog('/suggestSome', [function (session) {
  */
 bot.dialog('/tvSeriesInfo', [
     function (session) {
-        builder.Prompts.text(session, "What's the name of the series a partial also works for me");
+        builder.Prompts.text(session, "What's the name of the series a partial name also works for me");
     },
     function (session, result) {
         let tvSeries = result.response;
