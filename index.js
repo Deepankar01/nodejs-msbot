@@ -25,11 +25,10 @@ let menuChoices = [
 ];
 
 
-// console.log("{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET"));
-
 //=========================================================
 // Bot Setup
 //=========================================================
+
 
 // Setup Restify Server
 let server = restify.createServer();
@@ -49,6 +48,8 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 // Bots Dialogs
 //=========================================================
+
+//root dialog
 bot.dialog('/', [
     function (session) {
         builder.Prompts.choice(session, "What do you want to search for?", menuChoices);
@@ -77,8 +78,6 @@ bot.dialog('/', [
 bot.dialog('/suggestSome', [function (session) {
     //get some nice movies or tv series after a series of questions
 }]);
-
-
 
 
 /**
@@ -130,49 +129,51 @@ bot.dialog('/tvSeriesInfo', [
 /**
  * Search Movie dialog
  */
-bot.dialog('/searchMovie', [function (session) {
-    builder.Prompts.text(session, "What's the movie name a partial movie name also works for me");
-}, function (session, result) {
-    //TODO add LUIS or REGEX
-    let movieName = result.response;
-    omdbNetworkUtils.searchMovies(movieName).then(function searchMovies(movies) {
-        let movieTitles = movieUtils.movies.extractMovieChoices(movies).movieChoices;
-        /**
-         * Check the length of movie lists
-         * if we have more than one then we need to add it to the user session
-         * storage else we don't need it
-         */
-        if (movieTitles.length === 1) {
-            let card = commons.getMovieDetails(movies.imdbID, session);
-            session.send(card);
+bot.dialog('/searchMovie', [
+    function (session) {
+        builder.Prompts.text(session, "What's the movie name a partial movie name also works for me");
+    }, function (session, result) {
+        //TODO add LUIS or REGEX
+        let movieName = result.response;
+        omdbNetworkUtils.searchMovies(movieName).then(function searchMovies(movies) {
+            let movieTitles = movieUtils.movies.extractMovieChoices(movies).movieChoices;
+            /**
+             * Check the length of movie lists
+             * if we have more than one then we need to add it to the user session
+             * storage else we don't need it
+             */
+            if (movieTitles.length === 1) {
+                let card = commons.getMovieDetails(movies.imdbID, session);
+                session.send(card);
+                session.endDialog();
+                session.beginDialog("/");
+            }
+            else {
+                session.userData.movies = movies;
+                builder.Prompts.choice(session, "I found a lot of movies named {0}\n Which one are you exactly looking for?".format(movieName), movieTitles);
+            }
+        });
+
+    }, function (session, result) {
+        let movieTitle = result.response.entity.split(" ,")[0];
+        let movie = _.find(session.userData.movies, {'Title': movieTitle});
+        omdbNetworkUtils.getMovieDetails(movie.imdbID).then(function getMovieDetails(movieDetails) {
+            let card = cardsUtility.buildMovieCard(movieDetails, session);
+            let msg = new builder.Message(session).addAttachment(card);
+            session.send(msg);
             session.endDialog();
             session.beginDialog("/");
-        }
-        else {
-            session.userData.movies = movies;
-            builder.Prompts.choice(session, "I found a lot of movies named {0}\n Which one are you exactly looking for?".format(movieName), movieTitles);
-        }
-    });
-
-}, function (session, result) {
-    let movieTitle = result.response.entity.split(" ,")[0];
-    let movie = _.find(session.userData.movies, {'Title': movieTitle});
-    omdbNetworkUtils.getMovieDetails(movie.imdbID).then(function getMovieDetails(movieDetails) {
-        let card = cardsUtility.buildMovieCard(movieDetails, session);
-        let msg = new builder.Message(session).addAttachment(card);
-        session.send(msg);
-        session.endDialog();
-        session.beginDialog("/");
-    });
-}
+        });
+    }
 ]);
 
 
 /**
  * If some kind of error happens then some error
  */
-bot.dialog('/someError', [function (session) {
-    builder.Prompts.text(session, "Something happened :joy:");
-    session.endDialog();
-    session.beginDialog("/");
-}]);
+bot.dialog('/someError', [
+    function (session) {
+        builder.Prompts.text(session, "Something happened :joy:");
+        session.endDialog();
+        session.beginDialog("/");
+    }]);
