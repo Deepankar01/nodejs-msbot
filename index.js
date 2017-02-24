@@ -24,7 +24,6 @@ let menuChoices = [
     "Suggest some"
 ];
 
-
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -75,9 +74,17 @@ bot.dialog('/', [
 /**
  * suggestions for some movie after a series of waterfall question
  */
-bot.dialog('/suggestSome', [function (session) {
-    //get some nice movies or tv series after a series of questions
-}]);
+bot.dialog('/suggestSome', [
+    function (session) {
+        let categoryChoices = ["TV Series", "Movie"];
+        builder.Prompts.choice(session, "What would you like to watch ?", categoryChoices);
+    },
+    function (session, result) {
+        let choice = result.response.entity;
+        //TODO add a plot api
+        
+    }
+]);
 
 
 /**
